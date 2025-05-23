@@ -1,0 +1,10 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - coffee-redis-data:/var/lib/redis/data
+volumes:
+  coffee-redis-data:  
