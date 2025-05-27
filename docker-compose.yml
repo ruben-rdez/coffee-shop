@@ -6,5 +6,49 @@ services:
       - 6379:6379
     volumes:
       - coffee-redis-data:/var/lib/redis/data
+  
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    ports:
+      - 8080:8080
+      - 50000:50000
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4  
+      
+  sonarqube:
+    image: sonarqube:latest
+    container_name: sonarqube
+    depends_on:
+      - postgres
+    ports:
+      - 9000:9000
+    environment:
+      - SONAR_JDBC_URL=jdbc:postgresql://postgres:5432/sonar
+      - SONAR_JDBC_USERNAME=sonar
+      - SONAR_JDBC_PASSWORD=sonar
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+
+  postgres:
+    image: postgres:latest
+    container_name: sonarqube_postgres
+    environment:
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+      - POSTGRES_DB=sonar
+    volumes:
+      - postgresql:/var/lib/postgresql/data
+
 volumes:
-  coffee-redis-data:  
+  coffee-redis-data:
+  jenkins_home:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  postgresql:
